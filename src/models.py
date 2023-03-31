@@ -10,7 +10,7 @@ class Ride(Base):
     __tablename__ = "rides"
 
     id = Column(UUID, default=uuid4, primary_key=True, index=True)
-    publisher_id = Column(String, ForeignKey("users.UID"))
+    publisher_id = Column(Integer, ForeignKey("users.UID"))
     from_location = Column(String)
     to_location = Column(String)
     doj = Column(String)
@@ -39,7 +39,8 @@ class User(Base):
 class RideRequest(Base):
     __tablename__ = "riderequests"
 
-    publisher_id = Column(String, ForeignKey("users.UID"), primary_key=True)
-    requestee_id = Column(String, ForeignKey("users.UID"))
+    request_id = Column(Integer, primary_key=True, autoincrement=True)
+    publisher_id = Column(Integer, ForeignKey("users.UID"))
+    requestee_id = Column(Integer, ForeignKey("users.UID"))
     ride_id = Column(String, ForeignKey("rides.id"))
     request_status = Column(String, default="pending")

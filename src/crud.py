@@ -5,26 +5,7 @@ from sqlalchemy.orm import Session
 from . import models, schemas, utils
 
 
-def create_ride(db: Session, ride: schemas.RideCreate):
-    db_ride = models.Ride(**dict(ride))
-    db.add(db_ride)
-    db.commit()
-    db.refresh(db_ride)
-
-    return db_ride
-
-
-def get_all_rides(db: Session):
-    db_rides = db.query(models.Ride).all()
-
-    return db_rides
-
-
-def get_ride_by_id(db: Session, ride_id: str):
-    return db.query(models.Ride).filter(models.Ride.id == uuid.UUID(ride_id)).first()
-
-
-# users
+# Users CRUD
 def create_user(db: Session, user: schemas.UserCreate):
     hashed_password = utils.hash_password(user.password)
     db_user = models.User(
@@ -47,3 +28,80 @@ def create_user(db: Session, user: schemas.UserCreate):
 
 def get_user_by_id(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.UID == user_id).first()
+
+
+def create_ride(db: Session, ride: schemas.RideCreate, user_id: int):
+    db_ride = models.Ride(**dict(ride), publisher_id=user_id)
+    db.add(db_ride)
+    db.commit()
+    db.refresh(db_ride)
+
+    return db_ride
+
+
+# Rides CRUD
+def get_all_rides(db: Session):
+    db_rides = db.query(models.Ride).all()
+
+    return db_rides
+
+
+def get_ride_by_id(db: Session, ride_id: str):
+    db_ride = db.query(models.Ride).filter(models.Ride.id == uuid.UUID(ride_id)).first()
+
+    return db_ride
+
+
+def get_rides_by_publisher_id(db: Session, publisher_id: int):
+    return db.query(models.Ride).filter(models.Ride.publisher_id == publisher_id).all()
+
+
+# Ride Requests CRUD
+def create_ride_request(
+    db: Session, ride_request: schemas.RideRequestCreate, requestee_id: int
+):
+    db_request = models.RideRequest(**dict(ride_request), requestee_id=requestee_id)
+    db.add(db_request)
+    db.commit()
+    db.refresh(db_request)
+
+    return db_request
+
+
+def get_ride_request(db: Session, ride_id: str):
+    db_request = (
+        db.query(models.RideRequest)
+        .filter(models.RideRequest.ride_id == ride_id)
+        .first()
+    )
+
+    return db_request
+
+
+def fetch_requests_for_user(db: Session, publisher_id: int):
+    return (
+        db.query(models.RideRequest)
+        .filter(models.RideRequest.publisher_id == publisher_id)
+        .all()
+    )
+
+
+def update_request_status(db: Session, action: str, ride_id: str):
+    db_request = get_ride_request(db, ride_id)
+    if action == "accept":
+        db_request.request_status = "accepted"
+    elif action == "reject":
+        db_request.request_status = "rejected"
+
+    db.commit()
+    db.refresh(db_request)
+
+    return db_request
+
+
+def get_requests_by_requestee(requestee_id: int, db: Session):
+    return (
+        db.query(models.RideRequest)
+        .filter(models.RideRequest.requestee_id == requestee_id)
+        .all()
+    )
