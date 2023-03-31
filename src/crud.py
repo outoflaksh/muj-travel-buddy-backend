@@ -1,3 +1,5 @@
+import uuid
+
 from sqlalchemy.orm import Session
 
 from . import models, schemas
@@ -16,3 +18,7 @@ def get_all_rides(db: Session):
     db_rides = db.query(models.Ride).all()
 
     return db_rides
+
+
+def get_ride_by_id(db: Session, ride_id: str):
+    return db.query(models.Ride).filter(models.Ride.id == uuid.UUID(ride_id)).first()
