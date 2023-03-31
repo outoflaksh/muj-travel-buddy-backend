@@ -23,7 +23,7 @@ class Ride(Base):
 class User(Base):
     __tablename__ = "users"
 
-    UID = Column(String, default=uuid4, primary_key=True, index=True)
+    UID = Column(Integer, primary_key=True, index=True)
     user_type = Column(String)
     fname = Column(String)
     lname = Column(String)
