@@ -3,4 +3,4 @@ uvicorn
 gunicorn
 psycopg2
 sqlalchemy
-
+passlib[bcrypt]
