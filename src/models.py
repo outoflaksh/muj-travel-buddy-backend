@@ -10,7 +10,7 @@ class Ride(Base):
     __tablename__ = "rides"
 
     id = Column(UUID, default=uuid4, primary_key=True, index=True)
-    publisher_id = Column(Integer, ForeignKey("users.UID"))
+    publisher_id = Column(String, ForeignKey("users.UID"))
     from_location = Column(String)
     to_location = Column(String)
     doj = Column(String)

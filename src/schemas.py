@@ -2,7 +2,28 @@ import uuid
 
 from pydantic import BaseModel
 
-# User schemas
+
+class RideBase(BaseModel):
+    publisher_id: str
+    from_location: str
+    to_location: str
+    passenger_count: int
+    doj: str
+    price: int
+
+
+class RideCreate(RideBase):
+    pass
+
+
+class RideResponse(RideBase):
+    id: uuid.UUID
+
+    class Config:
+        orm_mode = True
+
+
+# User
 class UserBase(BaseModel):
     UID: int
     fname: str
@@ -25,38 +46,3 @@ class UserResponse(UserBase):
 class UserLogin(BaseModel):
     UID: int
     password: str
-
-
-class RideRequestCreate(BaseModel):
-    publisher_id: int
-    ride_id: str
-
-
-class RideRequestResponse(RideRequestCreate):
-    ride_status: str
-
-
-# Ride schemas
-class RideBase(BaseModel):
-    from_location: str
-    to_location: str
-    passenger_count: int
-    doj: str
-    price: int
-
-
-class RideCreate(RideBase):
-    pass
-
-
-class RideResponse(RideBase):
-    id: uuid.UUID
-    publisher_id: int
-    publisher: UserResponse
-
-    class Config:
-        orm_mode = True
-
-
-class RideRequestUpdate(BaseModel):
-    action: str
