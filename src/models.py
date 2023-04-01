@@ -39,8 +39,7 @@ class User(Base):
 class RideRequest(Base):
     __tablename__ = "riderequests"
 
-    request_id = Column(Integer, primary_key=True, autoincrement=True)
     publisher_id = Column(Integer, ForeignKey("users.UID"))
-    requestee_id = Column(Integer, ForeignKey("users.UID"))
-    ride_id = Column(String, ForeignKey("rides.id"))
+    requestee_id = Column(Integer, ForeignKey("users.UID"), primary_key=True)
+    ride_id = Column(String, ForeignKey("rides.id"), primary_key=True)
     request_status = Column(String, default="pending")
