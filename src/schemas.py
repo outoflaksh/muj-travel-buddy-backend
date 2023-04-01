@@ -56,3 +56,7 @@ class RideResponse(RideBase):
 
     class Config:
         orm_mode = True
+
+
+class RideRequestUpdate(BaseModel):
+    action: str
