@@ -60,3 +60,7 @@ class RideResponse(RideBase):
 
 class RideRequestUpdate(BaseModel):
     action: str
+
+
+class TokenData(BaseModel):
+    username: str

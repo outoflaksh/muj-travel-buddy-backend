@@ -35,6 +35,9 @@ class User(Base):
 
     rides = relationship("Ride", back_populates="publisher")
 
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 class RideRequest(Base):
     __tablename__ = "riderequests"

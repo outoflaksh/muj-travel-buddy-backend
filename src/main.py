@@ -1,12 +1,23 @@
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-from . import crud, models, schemas
+from . import crud, models, schemas, utils
 from .database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # Dependency
@@ -43,6 +54,20 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
     db_user = crud.create_user(db=db, user=user)
     return db_user
+
+
+@app.post("/users/login")
+def login_user(user: schemas.UserLogin, db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_id(db=db, user_id=user.UID)
+    if db_user is None:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found!",
+        )
+
+    if utils.verify_hash(user.password, db_user.hashed_password):
+        db_user.token = utils.create_access_token(db_user.as_dict())
+        return db_user
 
 
 @app.get("/users/{user_id}", response_model=schemas.UserResponse)
