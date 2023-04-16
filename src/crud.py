@@ -86,6 +86,12 @@ def fetch_requests_for_user(db: Session, publisher_id: int):
     )
 
 
+def fetch_requests_for_ride(db: Session, ride_id: str):
+    return (
+        db.query(models.RideRequest).filter(models.RideRequest.ride_id == ride_id).all()
+    )
+
+
 def update_request_status(db: Session, action: str, ride_id: str):
     db_request = get_ride_request(db, ride_id)
     if action == "accept":

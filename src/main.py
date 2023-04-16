@@ -43,6 +43,12 @@ def read_ride(ride_id: str, db: Session = Depends(get_db)):
     return crud.get_ride_by_id(db=db, ride_id=ride_id)
 
 
+# Show all requests where current user was publisher
+@app.get("/rides/{ride_id}/requests")
+def read_requests_for_user(ride_id: str, db: Session = Depends(get_db)):
+    return crud.fetch_requests_for_ride(ride_id=ride_id, db=db)
+
+
 # Users API
 @app.post("/users/register", status_code=201)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
