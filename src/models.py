@@ -1,4 +1,13 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Date, UUID
+from sqlalchemy import (
+    Boolean,
+    Column,
+    ForeignKey,
+    Integer,
+    String,
+    Date,
+    UUID,
+    BigInteger,
+)
 from sqlalchemy.orm import relationship
 
 from uuid import uuid4
@@ -10,7 +19,7 @@ class Ride(Base):
     __tablename__ = "rides"
 
     id = Column(UUID, default=uuid4, primary_key=True, index=True)
-    publisher_id = Column(String, ForeignKey("users.UID"))
+    publisher_id = Column(Integer, ForeignKey("users.UID"))
     from_location = Column(String)
     to_location = Column(String)
     doj = Column(String)
@@ -29,7 +38,7 @@ class User(Base):
     lname = Column(String)
     email = Column(String)
     designation = Column(String)
-    phone = Column(Integer)
+    phone = Column(String)
     rating = Column(Integer)
     hashed_password = Column(String)
 
@@ -44,5 +53,5 @@ class RideRequest(Base):
 
     publisher_id = Column(Integer, ForeignKey("users.UID"))
     requestee_id = Column(Integer, ForeignKey("users.UID"), primary_key=True)
-    ride_id = Column(String, ForeignKey("rides.id"), primary_key=True)
+    ride_id = Column(UUID, ForeignKey("rides.id"), primary_key=True)
     request_status = Column(String, default="pending")

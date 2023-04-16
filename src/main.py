@@ -131,11 +131,19 @@ def update_request_status(
     request_body: schemas.RideRequestUpdate,
     db: Session = Depends(get_db),
 ):
-    if crud.get_ride_request(ride_id=ride_id, db=db).publisher_id != user_id:
+    if (
+        crud.get_ride_request(
+            ride_id=ride_id, requestee_id=request_body.requestee_id, db=db
+        ).publisher_id
+        != user_id
+    ):
         raise HTTPException(status_code=401, detail="Not the owner!")
 
     return crud.update_request_status(
-        action=request_body.action, ride_id=ride_id, db=db
+        action=request_body.action,
+        ride_id=ride_id,
+        requestee_id=request_body.requestee_id,
+        db=db,
     )
 
 

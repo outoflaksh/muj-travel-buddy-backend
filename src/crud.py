@@ -1,5 +1,6 @@
 import uuid
 
+from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
 from . import models, schemas, utils
@@ -68,10 +69,15 @@ def create_ride_request(
     return db_request
 
 
-def get_ride_request(db: Session, ride_id: str):
+def get_ride_request(db: Session, ride_id: str, requestee_id: int):
     db_request = (
         db.query(models.RideRequest)
-        .filter(models.RideRequest.ride_id == ride_id)
+        .filter(
+            and_(
+                models.RideRequest.ride_id == ride_id,
+                models.RideRequest.requestee_id == requestee_id,
+            )
+        )
         .first()
     )
 
@@ -92,8 +98,8 @@ def fetch_requests_for_ride(db: Session, ride_id: str):
     )
 
 
-def update_request_status(db: Session, action: str, ride_id: str):
-    db_request = get_ride_request(db, ride_id)
+def update_request_status(db: Session, action: str, ride_id: str, requestee_id: int):
+    db_request = get_ride_request(db, ride_id, requestee_id)
     if action == "accept":
         db_request.request_status = "accepted"
     elif action == "reject":
