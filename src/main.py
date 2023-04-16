@@ -1,6 +1,7 @@
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from typing import List
 
 from . import crud, models, schemas, utils
 from .database import SessionLocal, engine
@@ -30,7 +31,7 @@ def get_db():
 
 
 # Rides API
-@app.get("/rides", response_model=list[schemas.RideResponse])
+@app.get("/rides", response_model=List[schemas.RideResponse])
 def read_rides(db: Session = Depends(get_db)):
     db_rides = crud.get_all_rides(db=db)
 
