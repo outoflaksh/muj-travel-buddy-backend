@@ -1,8 +1,8 @@
 fastapi
 uvicorn
 gunicorn
-psycopg2
 sqlalchemy
 passlib[bcrypt]
 python-jose[cryptography]
 python-dotenv
+typing
