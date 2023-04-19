@@ -1,7 +1,7 @@
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Union
 
 from . import crud, models, schemas, utils
 from .database import SessionLocal, engine
@@ -34,10 +34,10 @@ def get_db():
 @app.get("/rides", response_model=List[schemas.RideResponse])
 def read_rides(
     db: Session = Depends(get_db),
-    from_location: str | None = None,
-    to_location: str | None = None,
-    doj: str | None = None,
-    price: int | None = None,
+    from_location: Union[str, None] = None,
+    to_location: Union[str, None] = None,
+    doj: Union[str, None] = None,
+    price: Union[str, None] = None,
 ):
     db_rides = crud.get_all_rides(db, from_location, to_location, doj, price)
 
