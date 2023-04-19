@@ -1,6 +1,7 @@
 import uuid
 
 from sqlalchemy import and_
+from sqlalchemy.sql import text
 from sqlalchemy.orm import Session
 
 from . import models, schemas, utils
@@ -41,10 +42,19 @@ def create_ride(db: Session, ride: schemas.RideCreate, user_id: int):
 
 
 # Rides CRUD
-def get_all_rides(db: Session):
-    db_rides = db.query(models.Ride).all()
+def get_all_rides(db: Session, *filters):
+    db_rides = db.query(models.Ride)
 
-    return db_rides
+    if filters[0]:
+        db_rides = db_rides.filter(models.Ride.from_location == filters[0])
+    if filters[1]:
+        db_rides = db_rides.filter(models.Ride.to_location == filters[1])
+    if filters[2]:
+        db_rides = db_rides.filter(models.Ride.doj == filters[2])
+    if filters[3]:
+        db_rides = db_rides.filter(models.Ride.price <= filters[3])
+
+    return db_rides.all()
 
 
 def get_ride_by_id(db: Session, ride_id: str):

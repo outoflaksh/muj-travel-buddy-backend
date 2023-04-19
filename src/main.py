@@ -32,8 +32,14 @@ def get_db():
 
 # Rides API
 @app.get("/rides", response_model=List[schemas.RideResponse])
-def read_rides(db: Session = Depends(get_db)):
-    db_rides = crud.get_all_rides(db=db)
+def read_rides(
+    db: Session = Depends(get_db),
+    from_location: str | None = None,
+    to_location: str | None = None,
+    doj: str | None = None,
+    price: int | None = None,
+):
+    db_rides = crud.get_all_rides(db, from_location, to_location, doj, price)
 
     return db_rides
 
