@@ -112,6 +112,9 @@ def update_request_status(db: Session, action: str, ride_id: str, requestee_id: 
     db_request = get_ride_request(db, ride_id, requestee_id)
     if action == "accept":
         db_request.request_status = "accepted"
+        db_ride = get_ride_by_id(db, str(db_request.ride_id))
+        db_ride.passenger_count -= 1
+
     elif action == "reject":
         db_request.request_status = "rejected"
 
