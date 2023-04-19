@@ -43,7 +43,7 @@ def create_ride(db: Session, ride: schemas.RideCreate, user_id: int):
 
 # Rides CRUD
 def get_all_rides(db: Session, *filters):
-    db_rides = db.query(models.Ride)
+    db_rides = db.query(models.Ride).filter(models.Ride.passenger_count > 0)
 
     if filters[0]:
         db_rides = db_rides.filter(models.Ride.from_location == filters[0])
