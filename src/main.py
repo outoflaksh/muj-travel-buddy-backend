@@ -64,8 +64,29 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
             status_code=400,
             detail="User already exists with the provided ID!",
         )
+    # Users CRUD
+    '''
+        def create_user(db: Session, user: schemas.UserCreate):
+            hashed_password = utils.hash_password(user.password)
+            db_user = models.User(
+                UID=user.UID,
+                fname=user.fname,
+                lname=user.lname,
+                email=user.email,
+                designation=user.designation,
+                user_type=user.user_type,
+                phone=user.phone,
+                hashed_password=hashed_password,
+            )
 
+            db.add(db_user)
+            db.commit()
+            db.refresh(db_user)
+
+            return db_user'''
     db_user = crud.create_user(db=db, user=user)
+    #CREATE AND SEND MAIL TO THE USER HERE
+
     return db_user
 
 
