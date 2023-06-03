@@ -64,7 +64,7 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
             status_code=400,
             detail="User already exists with the provided ID!",
         )
-    # Users CRUD
+    # Users CRU
     '''
         def create_user(db: Session, user: schemas.UserCreate):
             hashed_password = utils.hash_password(user.password)
