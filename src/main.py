@@ -1,14 +1,19 @@
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+import ssl
 from sqlalchemy.orm import Session
 from typing import List, Union
-
+import emailScript
 from . import crud, models, schemas, utils
 from .database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+context = ssl.create_default_context()
+email_sender = 'vedic20052005@gmail.com'
+email_password = 'glmzmknigjlzqgkg'
 
 origins = ["*"]
 
@@ -64,28 +69,13 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
             status_code=400,
             detail="User already exists with the provided ID!",
         )
-    # Users CRU
-    '''
-        def create_user(db: Session, user: schemas.UserCreate):
-            hashed_password = utils.hash_password(user.password)
-            db_user = models.User(
-                UID=user.UID,
-                fname=user.fname,
-                lname=user.lname,
-                email=user.email,
-                designation=user.designation,
-                user_type=user.user_type,
-                phone=user.phone,
-                hashed_password=hashed_password,
-            )
-
-            db.add(db_user)
-            db.commit()
-            db.refresh(db_user)
-
-            return db_user'''
     db_user = crud.create_user(db=db, user=user)
-    #CREATE AND SEND MAIL TO THE USER HERE
+    #Imports the default welcome message in html
+    with open('on_register.html','r') as f:
+        msgContent = f.read()
+    msgContent = msgContent.replace('#USER#', db_user.fname.title() if db_user.fname else 'User',1)#Adds user's custom name there in place of #USER#
+
+    emailScript.sendMail(msgContent,email_sender,email_password,db_user.email)#SENDS THE MAIL
 
     return db_user
 
