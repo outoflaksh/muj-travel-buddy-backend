@@ -3,8 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import ssl
 from sqlalchemy.orm import Session
 from typing import List, Union
-import emailScript
-from . import crud, models, schemas, utils
+from . import crud, models, schemas, utils, emailScript
+import os
 from .database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
@@ -71,7 +71,7 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
         )
     db_user = crud.create_user(db=db, user=user)
     #Imports the default welcome message in html
-    with open('on_register.html','r') as f:
+    with open('src/on_register.html','r') as f:
         msgContent = f.read()
     msgContent = msgContent.replace('#USER#', db_user.fname.title() if db_user.fname else 'User',1)#Adds user's custom name there in place of #USER#
 
