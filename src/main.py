@@ -76,8 +76,7 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
         msgContent = f.read()
     msgContent = msgContent.replace('#USER#', db_user.fname.title() if db_user.fname else 'User',1)#Adds user's custom name there in place of #USER#
 
-    emailScript.sendMail(msgContent,email_sender,email_password,db_user.email,email_subject="Welcome to MUJ Travel Buddy!")#SENDS THE MAIL
-
+    emailScript.sendMail(msgContent,email_sender,email_password,db_user.email,email_subject="Welcome to MUJ Travel Buddy!",html=True)#SENDS THE MAIL
     return db_user
 
 
