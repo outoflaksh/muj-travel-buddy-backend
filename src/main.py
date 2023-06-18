@@ -4,16 +4,17 @@ import ssl
 from sqlalchemy.orm import Session
 from typing import List, Union
 from . import crud, models, schemas, utils, emailScript
+from dotenv import load_dotenv
 import os
 from .database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-
+load_dotenv()
 context = ssl.create_default_context()
-email_sender = 'vedic20052005@gmail.com'
-email_password = 'glmzmknigjlzqgkg'
+email_sender = 'mujtravelbuddy@gmail.com'
+email_password = os.getenv("EMAIL_PASSWORD")
 
 origins = ["*"]
 
