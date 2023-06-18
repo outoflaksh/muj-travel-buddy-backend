@@ -3,7 +3,7 @@ import ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-def sendMail(msgContent,email_sender,email_password,email_reciever,email_subject='Exclusive invite to Swoop users',html=False):
+def sendMail(msgContent,email_sender,email_password,email_reciever,email_subject,html=False):
     context = ssl.create_default_context()
     msg = MIMEMultipart('alternative')
     msg['From'] = email_sender
