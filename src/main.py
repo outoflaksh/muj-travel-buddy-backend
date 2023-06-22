@@ -1,14 +1,20 @@
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+import ssl
 from sqlalchemy.orm import Session
 from typing import List, Union
-
-from . import crud, models, schemas, utils
+from . import crud, models, schemas, utils, emailScript
+from dotenv import load_dotenv
+import os
 from .database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+load_dotenv()
+context = ssl.create_default_context()
+email_sender = 'mujtravelbuddy@gmail.com'
+email_password = os.getenv("EMAIL_PASSWORD")
 
 origins = ["*"]
 
@@ -64,8 +70,13 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
             status_code=400,
             detail="User already exists with the provided ID!",
         )
-
     db_user = crud.create_user(db=db, user=user)
+    #Imports the default welcome message in html
+    with open('src/on_register.html','r') as f:
+        msgContent = f.read()
+    msgContent = msgContent.replace('#USER#', db_user.fname.title() if db_user.fname else 'User',1)#Adds user's custom name there in place of #USER#
+
+    emailScript.sendMail(msgContent,email_sender,email_password,db_user.email,email_subject="Welcome to MUJ Travel Buddy!",html=True)#SENDS THE MAIL
     return db_user
 
 
